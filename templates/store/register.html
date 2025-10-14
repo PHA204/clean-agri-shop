@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Đăng ký - Clean Agri Shop{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold mb-2">Đăng ký tài khoản</h2>
+                        <p class="text-muted">Tạo tài khoản để bắt đầu mua sắm</p>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tên đăng nhập</label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="text-danger small mt-1">{{ form.username.errors }}</div>
+                            {% else %}
+                                <small class="text-muted">Chỉ sử dụng chữ cái, số và @/./+/-/_</small>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Mật khẩu</label>
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
+                                <div class="text-danger small mt-1">{{ form.password1.errors }}</div>
+                            {% else %}
+                                <small class="text-muted">Mật khẩu phải có ít nhất 8 ký tự</small>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Xác nhận mật khẩu</label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                                <div class="text-danger small mt-1">{{ form.password2.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                Đăng ký
+                            </button>
+                        </div>
+                        
+                        <div class="text-center">
+                            <p class="mb-0">
+                                Đã có tài khoản? 
+                                <a href="{% url 'login' %}" class="fw-bold" style="color: var(--primary-green);">
+                                    Đăng nhập
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control {
+        border: 2px solid var(--beige);
+        padding: 0.75rem;
+        border-radius: 8px;
+    }
+    
+    .form-control:focus {
+        border-color: var(--light-green);
+        box-shadow: 0 0 0 0.2rem rgba(74, 124, 44, 0.15);
+    }
+</style>
+{% endblock %}

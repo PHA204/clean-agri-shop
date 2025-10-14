@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Thanh Toán - Clean Agri Shop{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <h1 class="fw-bold mb-4" style="color: var(--primary-green);">Thanh Toán</h1>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4">Thông Tin Giao Hàng</h5>
+                        
+                        <form method="POST">
+                            {% csrf_token %}
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Họ và tên</label>
+                                {{ form.full_name }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Số điện thoại</label>
+                                {{ form.phone }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Địa chỉ giao hàng</label>
+                                {{ form.address }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Ghi chú (tùy chọn)</label>
+                                {{ form.note }}
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="bi bi-check-circle"></i> Đặt Hàng
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4">Đơn Hàng Của Bạn</h5>
+                        
+                        {% for item in cart_items %}
+                        <div class="d-flex justify-content-between mb-3">
+                            <div>
+                                <p class="mb-0 fw-bold">{{ item.product.name }}</p>
+                                <small class="text-muted">{{ item.quantity }} x {{ item.product.price|floatformat:0 }}đ</small>
+                            </div>
+                            <p class="mb-0 fw-bold">{{ item.get_total|floatformat:0 }}đ</p>
+                        </div>
+                        {% endfor %}
+                        
+                        <hr>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <p class="mb-0">Tạm tính:</p>
+                            <p class="mb-0">{{ total|floatformat:0 }}đ</p>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <p class="mb-0">Phí vận chuyển:</p>
+                            <p class="mb-0 text-success">Miễn phí</p>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="d-flex justify-content-between">
+                            <h5 class="fw-bold mb-0">Tổng cộng:</h5>
+                            <h5 class="fw-bold mb-0" style="color: var(--accent-coral);">{{ total|floatformat:0 }}đ</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

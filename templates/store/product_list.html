@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Danh Sách Sản Phẩm - Clean Agri Shop{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-4" style="background-color: var(--beige);">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="fw-bold mb-2" style="color: var(--primary-green);">Sản Phẩm Nông Sản</h1>
+                <p class="text-muted mb-0">Khám phá các sản phẩm tươi ngon từ trang trại</p>
+            </div>
+            <div class="col-md-6">
+                <form method="GET" class="d-flex gap-2">
+                    <input type="text" 
+                           name="search" 
+                           class="form-control" 
+                           placeholder="Tìm kiếm sản phẩm..."
+                           value="{{ search_query|default:'' }}">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Tìm
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories Filter -->
+<section class="py-4" style="background-color: white;">
+    <div class="container">
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'product_list' %}" 
+               class="btn {% if not current_category %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                Tất cả
+            </a>
+            {% for category in categories %}
+            <a href="{% url 'product_list' %}?category={{ category.slug }}" 
+               class="btn {% if current_category == category.slug %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                {{ category.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Products Grid -->
+<section class="py-5">
+    <div class="container">
+        {% if search_query %}
+        <div class="alert alert-info">
+            <i class="bi bi-search"></i> Kết quả tìm kiếm cho: <strong>{{ search_query }}</strong>
+        </div>
+        {% endif %}
+        
+        {% if products %}
+        <div class="row g-4">
+            {% for product in products %}
+            <div class="col-md-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    {% if product.is_organic %}
+                    <div class="position-absolute top-0 start-0 m-3">
+                        <span class="badge" style="background-color: var(--light-green);">
+                            <i class="bi bi-leaf"></i> Hữu cơ
+                        </span>
+                    </div>
+                    {% endif %}
+                    
+                    <img src="{{ product.image.url }}" 
+                         class="card-img-top" 
+                         alt="{{ product.name }}"
+                         style="height: 250px; object-fit: cover;">
+                    
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold mb-2">{{ product.name }}</h5>
+                        <p class="text-muted small mb-3">{{ product.category.name }}</p>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <span class="h5 fw-bold mb-0" style="color: var(--accent-coral);">
+                                    {{ product.price|floatformat:0 }}đ
+                                </span>
+                                <small class="text-muted">/{{ product.unit }}</small>
+                            </div>
+                            {% if product.origin %}
+                            <small class="text-muted">
+                                <i class="bi bi-geo-alt"></i> {{ product.origin }}
+                            </small>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'product_detail' product.slug %}" class="btn btn-outline-primary btn-sm">
+                                Xem chi tiết
+                            </a>
+                            {% if user.is_authenticated %}
+                            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary btn-sm">
+                                <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                            </a>
+                            {% else %}
+                            <a href="{% url 'login' %}" class="btn btn-primary btn-sm">
+                                <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <div class="mb-4" style="font-size: 5rem; color: var(--gray-text);">
+                <i class="bi bi-inbox"></i>
+            </div>
+            <h3 class="fw-bold mb-2">Không tìm thấy sản phẩm</h3>
+            <p class="text-muted mb-4">Thử tìm kiếm với từ khóa khác hoặc xem tất cả sản phẩm</p>
+            <a href="{% url 'product_list' %}" class="btn btn-primary">
+                Xem tất cả sản phẩm
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Đăng nhập - Clean Agri Shop{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold mb-2">Đăng nhập</h2>
+                        <p class="text-muted">Chào mừng bạn trở lại!</p>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tên đăng nhập</label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="text-danger small mt-1">{{ form.username.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Mật khẩu</label>
+                            {{ form.password }}
+                            {% if form.password.errors %}
+                                <div class="text-danger small mt-1">{{ form.password.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                Đăng nhập
+                            </button>
+                        </div>
+                        
+                        <div class="text-center">
+                            <p class="mb-0">
+                                Chưa có tài khoản? 
+                                <a href="{% url 'register' %}" class="fw-bold" style="color: var(--primary-green);">
+                                    Đăng ký ngay
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control {
+        border: 2px solid var(--beige);
+        padding: 0.75rem;
+        border-radius: 8px;
+    }
+    
+    .form-control:focus {
+        border-color: var(--light-green);
+        box-shadow: 0 0 0 0.2rem rgba(74, 124, 44, 0.15);
+    }
+</style>
+{% endblock %}

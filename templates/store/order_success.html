@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Đặt Hàng Thành Công - Clean Agri Shop{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <div class="mb-4" style="font-size: 5rem; color: var(--light-green);">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <h1 class="fw-bold mb-3" style="color: var(--primary-green);">Đặt Hàng Thành Công!</h1>
+            <p class="lead text-muted mb-4">Cảm ơn bạn đã mua hàng tại Clean Agri Shop</p>
+            <p class="text-muted">Mã đơn hàng: <strong>#{{ order.id }}</strong></p>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4">Thông Tin Đơn Hàng</h5>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">Người nhận:</p>
+                                <p class="fw-bold mb-0">{{ order.full_name }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">Số điện thoại:</p>
+                                <p class="fw-bold mb-0">{{ order.phone }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <p class="text-muted mb-1">Địa chỉ giao hàng:</p>
+                            <p class="fw-bold mb-0">{{ order.address }}</p>
+                        </div>
+                        
+                        {% if order.note %}
+                        <div class="mb-3">
+                            <p class="text-muted mb-1">Ghi chú:</p>
+                            <p class="mb-0">{{ order.note }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        <hr>
+                        
+                        <h6 class="fw-bold mb-3">Sản phẩm đã đặt:</h6>
+                        {% for item in order.items.all %}
+                        <div class="d-flex justify-content-between mb-2">
+                            <div>
+                                <p class="mb-0">{{ item.product.name }}</p>
+                                <small class="text-muted">{{ item.quantity }} x {{ item.price|floatformat:0 }}đ</small>
+                            </div>
+                            <p class="mb-0 fw-bold">{{ item.get_total|floatformat:0 }}đ</p>
+                        </div>
+                        {% endfor %}
+                        
+                        <hr>
+                        
+                        <div class="d-flex justify-content-between">
+                            <h5 class="fw-bold mb-0">Tổng cộng:</h5>
+                            <h5 class="fw-bold mb-0" style="color: var(--accent-coral);">{{ order.total_amount|floatformat:0 }}đ</h5>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a href="{% url 'home' %}" class="btn btn-primary me-2">
+                        <i class="bi bi-house"></i> Về Trang Chủ
+                    </a>
+                    <a href="{% url 'order_list' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-list-ul"></i> Xem Đơn Hàng
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

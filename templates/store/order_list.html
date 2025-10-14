@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Đơn Hàng Của Tôi - Clean Agri Shop{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <h1 class="fw-bold mb-4" style="color: var(--primary-green);">Đơn Hàng Của Tôi</h1>
+        
+        {% if orders %}
+        <div class="row g-4">
+            {% for order in orders %}
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="row align-items-center">
+                            <div class="col-md-2">
+                                <p class="text-muted mb-1">Mã đơn hàng</p>
+                                <p class="fw-bold mb-0">#{{ order.id }}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p class="text-muted mb-1">Ngày đặt</p>
+                                <p class="mb-0">{{ order.created_at|date:"d/m/Y" }}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p class="text-muted mb-1">Tổng tiền</p>
+                                <p class="fw-bold mb-0" style="color: var(--accent-coral);">{{ order.total_amount|floatformat:0 }}đ</p>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="text-muted mb-1">Trạng thái</p>
+                                {% if order.status == 'pending' %}
+                                <span class="badge bg-warning">Chờ xác nhận</span>
+                                {% elif order.status == 'processing' %}
+                                <span class="badge bg-info">Đang xử lý</span>
+                                {% elif order.status == 'shipping' %}
+                                <span class="badge bg-primary">Đang giao</span>
+                                {% elif order.status == 'completed' %}
+                                <span class="badge bg-success">Hoàn thành</span>
+                                {% else %}
+                                <span class="badge bg-danger">Đã hủy</span>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-3 text-end">
+                                <a href="{% url 'order_detail' order.id %}" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-eye"></i> Xem Chi Tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <div class="mb-4" style="font-size: 5rem; color: var(--gray-text);">
+                <i class="bi bi-inbox"></i>
+            </div>
+            <h3 class="fw-bold mb-2">Chưa có đơn hàng nào</h3>
+            <p class="text-muted mb-4">Bạn chưa đặt hàng sản phẩm nào</p>
+            <a href="{% url 'product_list' %}" class="btn btn-primary">
+                <i class="bi bi-basket"></i> Mua Sắm Ngay
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
