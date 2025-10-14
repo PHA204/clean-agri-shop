@@ -3,72 +3,365 @@
 {% block title %}Đăng nhập - Clean Agri Shop{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-5">
-            <div class="card border-0 shadow-lg">
-                <div class="card-body p-5">
-                    <div class="text-center mb-4">
-                        <h2 class="fw-bold mb-2">Đăng nhập</h2>
-                        <p class="text-muted">Chào mừng bạn trở lại!</p>
+<div class="auth-container">
+    <div class="auth-grid">
+        <!-- Left side - Image -->
+        <div class="auth-visual">
+            <div class="auth-visual-content">
+                <h1 class="auth-visual-title">Chào mừng trở lại</h1>
+                <p class="auth-visual-subtitle">Tiếp tục hành trình mua sắm nông sản sạch, tươi ngon từ trang trại đến bàn ăn của bạn</p>
+                <div class="auth-visual-features">
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>100% Hữu cơ</span>
+                    </div>
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Giao hàng nhanh</span>
+                    </div>
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Tươi mỗi ngày</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right side - Form -->
+        <div class="auth-form-container">
+            <div class="auth-form-wrapper">
+                <div class="auth-header">
+                    <h2 class="auth-title">Đăng nhập</h2>
+                    <p class="auth-subtitle">Nhập thông tin để tiếp tục</p>
+                </div>
+
+                <form method="post" class="auth-form">
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="auth-alert">
+                            <svg class="alert-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span>{{ form.non_field_errors.0 }}</span>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <svg class="label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            Tên đăng nhập
+                        </label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <span class="form-error">{{ form.username.errors.0 }}</span>
+                        {% endif %}
                     </div>
                     
-                    <form method="post">
-                        {% csrf_token %}
-                        
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Tên đăng nhập</label>
-                            {{ form.username }}
-                            {% if form.username.errors %}
-                                <div class="text-danger small mt-1">{{ form.username.errors }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label class="form-label fw-bold">Mật khẩu</label>
-                            {{ form.password }}
-                            {% if form.password.errors %}
-                                <div class="text-danger small mt-1">{{ form.password.errors }}</div>
-                            {% endif %}
-                        </div>
-                        
-                        {% if form.non_field_errors %}
-                            <div class="alert alert-danger">
-                                {{ form.non_field_errors }}
-                            </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <svg class="label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
+                            Mật khẩu
+                        </label>
+                        {{ form.password }}
+                        {% if form.password.errors %}
+                            <span class="form-error">{{ form.password.errors.0 }}</span>
                         {% endif %}
-                        
-                        <div class="d-grid mb-3">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                Đăng nhập
-                            </button>
-                        </div>
-                        
-                        <div class="text-center">
-                            <p class="mb-0">
-                                Chưa có tài khoản? 
-                                <a href="{% url 'register' %}" class="fw-bold" style="color: var(--primary-green);">
-                                    Đăng ký ngay
-                                </a>
-                            </p>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                    
+                    <button type="submit" class="auth-button">
+                        Đăng nhập
+                        <svg class="button-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
+                    </button>
+                    
+                    <div class="auth-footer">
+                        <p class="auth-footer-text">
+                            Chưa có tài khoản? 
+                            <a href="{% url 'register' %}" class="auth-link">Đăng ký ngay</a>
+                        </p>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-    .form-control {
-        border: 2px solid var(--beige);
-        padding: 0.75rem;
-        border-radius: 8px;
+    .auth-container {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%);
+        padding: 2rem 0;
     }
-    
+
+    .auth-grid {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        min-height: 600px;
+    }
+
+    .auth-visual {
+        background: linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%);
+        padding: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .auth-visual::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: url('/placeholder.svg?height=800&width=800') center/cover;
+        opacity: 0.1;
+        transform: rotate(-15deg);
+    }
+
+    .auth-visual-content {
+        position: relative;
+        z-index: 1;
+        color: white;
+    }
+
+    .auth-visual-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    .auth-visual-subtitle {
+        font-size: 1.125rem;
+        line-height: 1.6;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+    }
+
+    .auth-visual-features {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .feature-icon {
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+    }
+
+    .auth-form-container {
+        padding: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .auth-form-wrapper {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .auth-header {
+        margin-bottom: 2rem;
+    }
+
+    .auth-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-subtitle {
+        font-size: 1rem;
+        color: #666;
+    }
+
+    .auth-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .auth-alert {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem;
+        background: #fee;
+        border: 1px solid #fcc;
+        border-radius: 12px;
+        color: #c33;
+        font-size: 0.875rem;
+    }
+
+    .alert-icon {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        color: #333;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .label-icon {
+        width: 18px;
+        height: 18px;
+        color: #4a7c2c;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+
     .form-control:focus {
-        border-color: var(--light-green);
-        box-shadow: 0 0 0 0.2rem rgba(74, 124, 44, 0.15);
+        outline: none;
+        border-color: #4a7c2c;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(74, 124, 44, 0.1);
+    }
+
+    .form-error {
+        color: #c33;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .auth-button {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #4a7c2c 0%, #2d5016 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .auth-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(74, 124, 44, 0.3);
+    }
+
+    .button-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+    .auth-footer-text {
+        color: #666;
+        font-size: 0.875rem;
+    }
+
+    .auth-link {
+        color: #4a7c2c;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .auth-link:hover {
+        color: #2d5016;
+        text-decoration: underline;
+    }
+
+    @media (max-width: 968px) {
+        .auth-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .auth-visual {
+            padding: 3rem 2rem;
+            min-height: 300px;
+        }
+
+        .auth-visual-title {
+            font-size: 2rem;
+        }
+
+        .auth-form-container {
+            padding: 3rem 2rem;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .auth-container {
+            padding: 1rem;
+        }
+
+        .auth-visual {
+            padding: 2rem 1.5rem;
+        }
+
+        .auth-form-container {
+            padding: 2rem 1.5rem;
+        }
+
+        .auth-visual-title {
+            font-size: 1.75rem;
+        }
     }
 </style>
 {% endblock %}

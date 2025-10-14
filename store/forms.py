@@ -35,3 +35,20 @@ class CheckoutForm(forms.Form):
             'placeholder': 'Ghi chú thêm (không bắt buộc)'
         })
     )
+
+class ReviewForm(forms.Form):
+    rating = forms.ChoiceField(
+        choices=[(i, f'{i} sao') for i in range(1, 6)],
+        label='Đánh giá',
+        widget=forms.Select(attrs={
+            'class': 'form-select'
+        })
+    )
+    comment = forms.CharField(
+        label='Nhận xét của bạn',
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 4,
+            'placeholder': 'Chia sẻ trải nghiệm của bạn về sản phẩm này...'
+        })
+    )

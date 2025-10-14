@@ -101,3 +101,44 @@ class OrderItem(models.Model):
 
     def get_total(self):
         return self.price * self.quantity
+
+
+class Review(models.Model):
+    RATING_CHOICES = [
+        (1, '1 sao - Rất tệ'),
+        (2, '2 sao - Tệ'),
+        (3, '3 sao - Trung bình'),
+        (4, '4 sao - Tốt'),
+        (5, '5 sao - Xuất sắc'),
+    ]
+    
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews', verbose_name="Sản phẩm")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews', verbose_name="Người dùng")
+    rating = models.IntegerField(choices=RATING_CHOICES, verbose_name="Đánh giá")
+    comment = models.TextField(verbose_name="Nhận xét")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = "Đánh giá"
+        verbose_name_plural = "Đánh giá"
+        ordering = ['-created_at']
+        unique_together = ['product', 'user']  # Mỗi user chỉ review 1 lần cho 1 sản phẩm
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.product.name} - {self.rating} sao"
+
+
+class Wishlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist', verbose_name="Người dùng")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='wishlisted_by', verbose_name="Sản phẩm")
+    added_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = "Danh sách yêu thích"
+        verbose_name_plural = "Danh sách yêu thích"
+        ordering = ['-added_at']
+        unique_together = ['user', 'product']  # Mỗi user chỉ thêm 1 lần cho 1 sản phẩm
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.product.name}"

@@ -31,6 +31,22 @@
             
             <h1 class="fw-bold mb-3">{{ product.name }}</h1>
             
+            <!-- Adding rating display -->
+            {% if average_rating %}
+            <div class="mb-3">
+                <span class="text-warning">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= average_rating %}
+                            <i class="bi bi-star-fill"></i>
+                        {% else %}
+                            <i class="bi bi-star"></i>
+                        {% endif %}
+                    {% endfor %}
+                </span>
+                <span class="text-muted ms-2">{{ average_rating|floatformat:1 }} ({{ reviews.count }} đánh giá)</span>
+            </div>
+            {% endif %}
+            
             <div class="mb-3">
                 <span class="badge bg-secondary">{{ product.category.name }}</span>
                 {% if product.origin %}
@@ -77,10 +93,22 @@
             
             {% if product.is_available %}
                 {% if user.is_authenticated %}
+                <!-- Adding wishlist and cart buttons -->
                 <div class="d-grid gap-2">
-                    <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary btn-lg">
-                        <i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
-                    </a>
+                    <div class="btn-group" role="group">
+                        <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary btn-lg" style="flex: 1;">
+                            <i class="bi bi-cart-plus"></i> Thêm vào giỏ hàng
+                        </a>
+                        {% if in_wishlist %}
+                        <a href="{% url 'wishlist' %}" class="btn btn-outline-danger btn-lg">
+                            <i class="bi bi-heart-fill"></i>
+                        </a>
+                        {% else %}
+                        <a href="{% url 'add_to_wishlist' product.id %}" class="btn btn-outline-danger btn-lg">
+                            <i class="bi bi-heart"></i>
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
                 {% else %}
                 <div class="alert alert-info">
@@ -103,6 +131,89 @@
                 </ul>
             </div>
         </div>
+    </div>
+
+    <!-- Adding Reviews Section -->
+    <div class="mt-5">
+        <h3 class="fw-bold mb-4">Đánh giá sản phẩm</h3>
+        
+        {% if user.is_authenticated %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title mb-3">
+                    {% if user_review %}
+                        Chỉnh sửa đánh giá của bạn
+                    {% else %}
+                        Viết đánh giá
+                    {% endif %}
+                </h5>
+                <form method="post" action="{% url 'add_review' product.id %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Đánh giá</label>
+                        <select name="rating" class="form-select" required>
+                            <option value="">Chọn số sao</option>
+                            {% for i in "12345" %}
+                            <option value="{{ forloop.counter }}" {% if user_review and user_review.rating == forloop.counter %}selected{% endif %}>
+                                {{ forloop.counter }} sao
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nhận xét của bạn</label>
+                        <textarea name="comment" class="form-control" rows="4" placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..." required>{% if user_review %}{{ user_review.comment }}{% endif %}</textarea>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            {% if user_review %}Cập nhật đánh giá{% else %}Gửi đánh giá{% endif %}
+                        </button>
+                        {% if user_review %}
+                        <a href="{% url 'delete_review' user_review.id %}" class="btn btn-outline-danger" onclick="return confirm('Bạn có chắc muốn xóa đánh giá này?')">
+                            Xóa đánh giá
+                        </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            Vui lòng <a href="{% url 'login' %}">đăng nhập</a> để viết đánh giá
+        </div>
+        {% endif %}
+        
+        <!-- Display Reviews -->
+        {% if reviews %}
+        <div class="row g-4">
+            {% for review in reviews %}
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <h6 class="mb-1">{{ review.user.username }}</h6>
+                                <div class="text-warning mb-2">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= review.rating %}
+                                            <i class="bi bi-star-fill"></i>
+                                        {% else %}
+                                            <i class="bi bi-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <small class="text-muted">{{ review.created_at|date:"d/m/Y" }}</small>
+                        </div>
+                        <p class="mb-0">{{ review.comment }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted">Chưa có đánh giá nào cho sản phẩm này.</p>
+        {% endif %}
     </div>
 
     <!-- Related Products -->

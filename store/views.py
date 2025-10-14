@@ -3,9 +3,9 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
-from django.db.models import Q
-from .models import Product, Category, Cart, Order, OrderItem
-from .forms import CheckoutForm
+from django.db.models import Q, Avg
+from .models import Product, Category, Cart, Order, OrderItem, Review, Wishlist
+from .forms import CheckoutForm, ReviewForm
 
 
 def home(request):
@@ -55,9 +55,23 @@ def product_detail(request, slug):
         is_available=True
     ).exclude(id=product.id)[:4]
     
+    reviews = product.reviews.all()
+    average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
+    user_review = None
+    if request.user.is_authenticated:
+        user_review = reviews.filter(user=request.user).first()
+    
+    in_wishlist = False
+    if request.user.is_authenticated:
+        in_wishlist = Wishlist.objects.filter(user=request.user, product=product).exists()
+    
     context = {
         'product': product,
         'related_products': related_products,
+        'reviews': reviews,
+        'average_rating': average_rating,
+        'user_review': user_review,
+        'in_wishlist': in_wishlist,
     }
     return render(request, 'store/product_detail.html', context)
 
@@ -241,3 +255,84 @@ def logout_view(request):
     logout(request)
     messages.success(request, 'Đã đăng xuất!')
     return redirect('home')
+
+
+@login_required
+def add_review(request, product_id):
+    """Thêm đánh giá sản phẩm"""
+    product = get_object_or_404(Product, id=product_id)
+    
+    # Kiểm tra user đã review chưa
+    existing_review = Review.objects.filter(user=request.user, product=product).first()
+    
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            if existing_review:
+                # Cập nhật review cũ
+                existing_review.rating = form.cleaned_data['rating']
+                existing_review.comment = form.cleaned_data['comment']
+                existing_review.save()
+                messages.success(request, 'Đã cập nhật đánh giá của bạn!')
+            else:
+                # Tạo review mới
+                Review.objects.create(
+                    user=request.user,
+                    product=product,
+                    rating=form.cleaned_data['rating'],
+                    comment=form.cleaned_data['comment']
+                )
+                messages.success(request, 'Cảm ơn bạn đã đánh giá sản phẩm!')
+            
+            return redirect('product_detail', slug=product.slug)
+    
+    return redirect('product_detail', slug=product.slug)
+
+
+@login_required
+def delete_review(request, review_id):
+    """Xóa đánh giá"""
+    review = get_object_or_404(Review, id=review_id, user=request.user)
+    product_slug = review.product.slug
+    review.delete()
+    messages.success(request, 'Đã xóa đánh giá của bạn!')
+    return redirect('product_detail', slug=product_slug)
+
+
+@login_required
+def wishlist_view(request):
+    """Xem danh sách yêu thích"""
+    wishlist_items = Wishlist.objects.filter(user=request.user).select_related('product')
+    
+    context = {
+        'wishlist_items': wishlist_items,
+    }
+    return render(request, 'store/wishlist.html', context)
+
+
+@login_required
+def add_to_wishlist(request, product_id):
+    """Thêm sản phẩm vào danh sách yêu thích"""
+    product = get_object_or_404(Product, id=product_id)
+    
+    wishlist_item, created = Wishlist.objects.get_or_create(
+        user=request.user,
+        product=product
+    )
+    
+    if created:
+        messages.success(request, f'Đã thêm {product.name} vào danh sách yêu thích!')
+    else:
+        messages.info(request, f'{product.name} đã có trong danh sách yêu thích!')
+    
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+
+@login_required
+def remove_from_wishlist(request, wishlist_id):
+    """Xóa sản phẩm khỏi danh sách yêu thích"""
+    wishlist_item = get_object_or_404(Wishlist, id=wishlist_id, user=request.user)
+    product_name = wishlist_item.product.name
+    wishlist_item.delete()
+    messages.success(request, f'Đã xóa {product_name} khỏi danh sách yêu thích!')
+    return redirect(request.META.get('HTTP_REFERER', 'wishlist'))

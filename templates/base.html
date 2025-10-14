@@ -233,12 +233,15 @@
                                 <span class="cart-badge">{{ cart_count }}</span>
                             {% endif %}
                         </a>
+                         <a href="{% url 'wishlist' %}" class="nav-link">
+                            <i class="bi bi-heart"></i>                           
+                        </a>
                         <div class="dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-person-circle"></i> {{ user.username }}
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{% url 'order_list' %}">Đơn hàng của tôi</a></li>
+                                <li><a class="dropdown-item" href="{% url 'order_list' %}">Đơn hàng của tôi</a></li>                                
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{% url 'logout' %}">Đăng xuất</a></li>
                             </ul>
