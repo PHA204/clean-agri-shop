@@ -110,7 +110,7 @@ clean_agri_shop/
 
 - **Backend:** Django 5.0
 - **Frontend:** Bootstrap 5, Bootstrap Icons
-- **Database:** SQLite (mặc định)
+- **Database:** Postre SQL
 - **Image Processing:** Pillow
 
 ## Tính năng nổi bật
