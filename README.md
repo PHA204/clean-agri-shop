@@ -130,8 +130,8 @@ clean_agri_shop/
 
 ## Hỗ trợ
 
-Nếu gặp vấn đề, vui lòng tạo issue hoặc liên hệ.
+Nếu gặp vấn đề, vui lòng tạo issue hoặc liên hệ kshinichi3987@gmail.com
 
 ## License
 
-MIT License
+The Fool
